@@ -95,12 +95,34 @@ def main() -> int:
     parser.add_argument(
         "--eval-set",
         type=Path,
-        default=EVAL_DIR / "rag_eval_set.json",
-        help="Path to eval JSON dataset.",
+        default=None,
+        help="Path to eval JSON dataset (default: eval/rag_eval_set.json).",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Run all eval datasets in eval/ (rag_eval_set*.json).",
     )
     args = parser.parse_args()
 
-    eval_set = load_eval_set(args.eval_set)
+    eval_paths = (
+        sorted(EVAL_DIR.glob("rag_eval_set*.json"))
+        if args.all
+        else [args.eval_set or EVAL_DIR / "rag_eval_set.json"]
+    )
+
+    exit_code = 0
+    for eval_path in eval_paths:
+        print(f"\n{'=' * 60}\nEval set: {eval_path.name}\n{'=' * 60}")
+        code = _run_single_eval(eval_path, args.with_llm, args.model)
+        if code != 0:
+            exit_code = code
+
+    raise SystemExit(exit_code)
+
+
+def _run_single_eval(eval_path: Path, with_llm: bool, model: str) -> int:
+    eval_set = load_eval_set(eval_path)
     fixture = eval_set["fixture"]
 
     print(f"Loading fixture: {fixture}")
@@ -111,10 +133,10 @@ def main() -> int:
 
     report = run_retrieval_eval(vectorstore, eval_set)
 
-    if args.with_llm:
+    if with_llm:
         print("Running generation eval via Groq (free tier)...")
         report.generation_results = run_generation_eval(
-            vectorstore, eval_set, model=args.model, temperature=0.2
+            vectorstore, eval_set, model=model, temperature=0.2
         )
 
     print(format_report(report))

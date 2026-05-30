@@ -1,0 +1,48 @@
+{
+  "fixture": "sample_prd.txt",
+  "description": "Eval set for e-commerce checkout PRD (sample_prd.txt).",
+  "retrieval_k": 4,
+  "pass_thresholds": {
+    "retrieval_pass_rate": 0.75,
+    "avg_keyword_recall": 0.4,
+    "avg_mrr": 0.4
+  },
+  "retrieval_cases": [
+    {
+      "id": "SPRD-001",
+      "type": "retrieval_positive",
+      "query": "What happens after 3 consecutive payment failures?",
+      "expected_keywords": ["3", "10 minutes", "locked", "payment failure"],
+      "min_keyword_recall": 0.4
+    },
+    {
+      "id": "SPRD-002",
+      "type": "retrieval_positive",
+      "query": "What are the credit card number length requirements?",
+      "expected_keywords": ["13", "16", "digits"],
+      "min_keyword_recall": 0.4
+    },
+    {
+      "id": "SPRD-003",
+      "type": "retrieval_positive",
+      "query": "What message appears when a coupon code has expired?",
+      "expected_keywords": ["expired", "coupon"],
+      "min_keyword_recall": 0.5
+    },
+    {
+      "id": "SPRD-004",
+      "type": "retrieval_negative",
+      "query": "What are the login module password reset email templates?",
+      "expected_keywords": ["password reset", "email template"],
+      "forbidden_in_context": ["password reset email", "reset link template"]
+    }
+  ],
+  "generation_cases": [
+    {
+      "id": "SPRD-GEN-001",
+      "query": "Generate boundary test cases for credit card digit length validation.",
+      "min_faithfulness": 0.1,
+      "forbidden_in_answer": []
+    }
+  ]
+}

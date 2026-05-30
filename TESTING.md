@@ -69,4 +69,14 @@ Additional metrics:
 
 ## Eval dataset
 
-Ground-truth cases live in `eval/rag_eval_set.json` (7 retrieval + 2 generation cases against `minimal_prd.txt`). Extend this file as you add PRD fixtures.
+Ground-truth cases live in:
+- `eval/rag_eval_set.json` — minimal PRD
+- `eval/rag_eval_set_sample_prd.json` — e-commerce checkout PRD
+
+Run all eval sets: `python -m eval.run_eval --all`
+
+## Phase 5 — QA team features
+
+- **Follow-up chat** — refine test suites without re-uploading
+- **Tool exports** — Jira, TestRail, Azure DevOps CSV
+- **Expanded RAG eval** — second benchmark for `sample_prd.txt`

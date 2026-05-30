@@ -118,6 +118,24 @@ class TestRelevanceScore:
         assert relevance_score(0.0) == 1.0
 
 
+class TestBuildQueryWithHistory:
+    def test_returns_query_unchanged_without_history(self):
+        from core import build_query_with_history
+
+        assert build_query_with_history("hello", []) == "hello"
+
+    def test_includes_prior_messages(self):
+        from core import build_query_with_history
+
+        history = [
+            {"role": "user", "content": "Generate login tests"},
+            {"role": "assistant", "content": "TC-001 ..."},
+        ]
+        result = build_query_with_history("Add negative cases", history)
+        assert "Add negative cases" in result
+        assert "Generate login tests" in result
+
+
 class TestUploadValidation:
     def test_rejects_unsupported_extension(self):
         bad = MockUploadedFile("spec.docx", b"content")

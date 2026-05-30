@@ -1,0 +1,25 @@
+# PRODUCT REQUIREMENT DOCUMENT (PRD)
+## Project Core: E-Commerce Checkout & Payment Gateway Microservice (v4.2)
+
+### 1. Feature Overview
+This document specifies the functional requirements for the core checkout and payment processing engine. The system handles shopping cart progression, coupon processing, and third-party credit card tokenization pipelines.
+
+### 2. Functional Requirements & Business Logic
+
+#### REQ-001: User Cart & Order Progression
+- The system shall only allow users to transition to the Checkout Phase if the active shopping cart value is greater than $0.00.
+- If an anonymous/guest user initiates checkout, the system must force a redirect to the Authentication module before collecting payment details.
+
+#### REQ-002: Coupon & Discount Validations
+- Users can apply a single promotional code string per transaction window.
+- The system must validate expiration timelines. If an expired code is entered, the UI must display a validation message: "Error: This coupon code has expired."
+- If a discount matches or exceeds the total cost of items in the cart, the system shall adjust the remaining billable balance exactly to $0.00. It must not generate negative balances under any condition.
+
+#### REQ-003: Payment Processing & Error Interceptions
+- The interface must enforce input lengths for credit card numbers between 13 and 16 digits.
+- The system must validate card expiration dates. The system shall block transactions using expiration dates earlier than the current machine date/month.
+- **Security Lockout Strategy:** If a user triggers a single payment failure code 3 consecutive times within a rolling 15-minute window, the microservice must lock that user account profile for exactly 10 minutes to protect against credential stuffing attacks. The system must display the error: "Account locked due to repetitive payment failures."
+
+### 3. Performance & System Constraints
+- Payment tokenization handshakes with the external gateway must resolve in under 2.5 seconds.
+- If the gateway API drops offline or times out (exceeding 3.0 seconds without responding), the checkout engine must catch the exception, fail gracefully, return the items to the user's active shopping cart, and show an alert: "Payment service unavailable. Your items are safe in your cart."
