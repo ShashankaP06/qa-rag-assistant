@@ -1,0 +1,75 @@
+{
+  "fixture": "minimal_prd.txt",
+  "description": "Ground-truth eval set for minimal_prd.txt — free local retrieval eval.",
+  "retrieval_k": 4,
+  "pass_thresholds": {
+    "retrieval_pass_rate": 0.85,
+    "avg_keyword_recall": 0.5,
+    "avg_mrr": 0.5
+  },
+  "retrieval_cases": [
+    {
+      "id": "RET-001",
+      "type": "retrieval_positive",
+      "query": "What is the maximum number of login attempts before lockout?",
+      "expected_keywords": ["3", "login", "locked", "15 minutes"],
+      "min_keyword_recall": 0.5
+    },
+    {
+      "id": "RET-002",
+      "type": "retrieval_positive",
+      "query": "What is the minimum password length requirement?",
+      "expected_keywords": ["8 characters", "password"],
+      "min_keyword_recall": 0.5
+    },
+    {
+      "id": "RET-003",
+      "type": "retrieval_positive",
+      "query": "What message is shown for an empty search query?",
+      "expected_keywords": ["Please enter a search term", "empty"],
+      "min_keyword_recall": 0.5
+    },
+    {
+      "id": "RET-004",
+      "type": "retrieval_positive",
+      "query": "What are the display name character limits in the profile module?",
+      "expected_keywords": ["50 characters", "display name"],
+      "min_keyword_recall": 0.5
+    },
+    {
+      "id": "RET-005",
+      "type": "retrieval_positive",
+      "query": "Can users change their email address after registration?",
+      "expected_keywords": ["cannot be changed", "email"],
+      "min_keyword_recall": 0.5
+    },
+    {
+      "id": "RET-006",
+      "type": "retrieval_negative",
+      "query": "What are the payment gateway integration test requirements?",
+      "expected_keywords": ["payment", "gateway"],
+      "forbidden_in_context": ["payment", "gateway", "stripe", "paypal"]
+    },
+    {
+      "id": "RET-007",
+      "type": "retrieval_negative",
+      "query": "Describe two-factor authentication setup and OTP expiry rules.",
+      "expected_keywords": ["two-factor", "otp", "2fa"],
+      "forbidden_in_context": ["two-factor", "otp", "2fa", "authenticator"]
+    }
+  ],
+  "generation_cases": [
+    {
+      "id": "GEN-001",
+      "query": "Generate test cases for the login lockout rule after failed attempts.",
+      "min_faithfulness": 0.15,
+      "forbidden_in_answer": ["payment", "stripe"]
+    },
+    {
+      "id": "GEN-002",
+      "query": "What test cases should we write for payment gateway and credit card processing?",
+      "expect_insufficient_context": true,
+      "forbidden_in_answer": ["TC-001", "credit card", "payment gateway"]
+    }
+  ]
+}

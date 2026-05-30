@@ -1,0 +1,14 @@
+# Minimal PRD for QA RAG testing
+
+## 1. Login Module
+- Users must enter a valid email and password to log in.
+- Maximum login attempts: 3. After 3 failed attempts, the account is locked for 15 minutes.
+- Password must be at least 8 characters long.
+
+## 2. Search Module
+- Search accepts alphanumeric queries up to 100 characters.
+- Empty search queries must show the message "Please enter a search term."
+
+## 3. Profile Module
+- Users can update their display name (max 50 characters).
+- Email address cannot be changed after registration.
