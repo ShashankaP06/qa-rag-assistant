@@ -43,6 +43,7 @@ from core import (
     validate_uploads,
 )
 from exports import EXPORT_FORMATS, export_test_suite
+from theme import inject_forge_theme
 
 load_dotenv(Path(__file__).parent / ".env", override=True)
 
@@ -448,6 +449,7 @@ def main() -> None:
         page_icon="🧪",
         layout="wide",
     )
+    inject_forge_theme()
 
     _sync_streamlit_secrets_to_env()
     init_session_state()
