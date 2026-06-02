@@ -13,6 +13,8 @@ Upload requirements documents (`.txt`, `.pdf`) → retrieve relevant context →
 - Export to Markdown and CSV
 - RAG evaluation benchmark (`eval/run_eval.py`)
 - Automated CI via GitHub Actions
+- **Follow-up chat** for iterative test design
+- **QA tool exports** — Jira, TestRail, Azure DevOps CSV
 
 ## Quick start (local)
 

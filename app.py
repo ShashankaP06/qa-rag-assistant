@@ -16,11 +16,11 @@ from core import (
     DEFAULT_RETRIEVAL_K,
     EMBEDDING_MODEL,
     GROQ_MODELS,
-    METADATA_PATH,
     QUICK_ACTIONS,
     SYSTEM_PROMPT,
     batch_hash_signature,
     build_indexed_file_records,
+    build_query_with_history,
     build_vectorstore,
     friendly_api_error,
     get_groq_api_key,
@@ -33,6 +33,7 @@ from core import (
     validate_groq_env,
     validate_uploads,
 )
+from exports import EXPORT_FORMATS, export_test_suite
 
 load_dotenv(Path(__file__).parent / ".env", override=True)
 
@@ -54,6 +55,7 @@ def init_session_state() -> None:
         "embeddings_model": None,
         "chain_settings": None,
         "persist_index": True,
+        "chat_messages": [],
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -79,6 +81,7 @@ def clear_index() -> None:
     st.session_state.last_answer = ""
     st.session_state.last_query = ""
     st.session_state.chain_settings = None
+    st.session_state.chat_messages = []
     if CHROMA_PERSIST_DIR.exists():
         shutil.rmtree(CHROMA_PERSIST_DIR, ignore_errors=True)
 
@@ -189,6 +192,50 @@ def invalidate_chain_if_settings_changed(model: str, temperature: float, k: int)
         st.session_state.chain_settings = settings
 
 
+def run_generation(
+    query: str,
+    model: str,
+    temperature: float,
+    retrieval_k: int,
+    *,
+    use_history: bool = False,
+) -> tuple[str, list] | None:
+    if st.session_state.vectorstore is None:
+        st.warning("Please upload and index at least one document first.")
+        return None
+
+    if st.session_state.retrieval_chain is None:
+        st.session_state.retrieval_chain = build_retrieval_chain(
+            st.session_state.vectorstore,
+            model=model,
+            temperature=temperature,
+            k=retrieval_k,
+        )
+
+    final_query = (
+        build_query_with_history(query, st.session_state.chat_messages)
+        if use_history
+        else query
+    )
+
+    with st.spinner("Generating test suite from retrieved context..."):
+        try:
+            result = st.session_state.retrieval_chain.invoke({"input": final_query})
+            answer = result.get("answer", "No response generated.")
+            context_docs = result.get("context", [])
+        except Exception as exc:
+            st.error(friendly_api_error(exc))
+            st.session_state.retrieval_chain = None
+            return None
+
+    st.session_state.chat_messages.append({"role": "user", "content": query})
+    st.session_state.chat_messages.append({"role": "assistant", "content": answer})
+    st.session_state.last_answer = answer
+    st.session_state.last_query = query
+    st.session_state.last_context_docs = context_docs
+    return answer, context_docs
+
+
 # ---------------------------------------------------------------------------
 # UI components
 # ---------------------------------------------------------------------------
@@ -206,25 +253,41 @@ def render_export_buttons(answer: str) -> None:
     if not answer.strip():
         return
 
-    col_md, col_csv = st.columns(2)
-    with col_md:
+    df = parse_markdown_table(answer)
+    st.markdown("**Export test suite**")
+
+    row1 = st.columns(2)
+    with row1[0]:
         st.download_button(
-            label="Download Markdown",
+            label="Markdown",
             data=answer,
             file_name="test_suite.md",
             mime="text/markdown",
             use_container_width=True,
         )
-    with col_csv:
-        df = parse_markdown_table(answer)
+    with row1[1]:
         csv_data = df.to_csv(index=False) if df is not None else answer
         st.download_button(
-            label="Download CSV",
+            label="CSV",
             data=csv_data,
             file_name="test_suite.csv",
             mime="text/csv",
             use_container_width=True,
         )
+
+    if df is not None and not df.empty:
+        row2 = st.columns(3)
+        tool_exports = list(EXPORT_FORMATS.items())
+        for col, (label, _) in zip(row2, tool_exports):
+            with col:
+                tool_csv = export_test_suite(df, label)
+                st.download_button(
+                    label=label,
+                    data=tool_csv or "",
+                    file_name=f"test_suite_{label.lower().replace(' ', '_')}.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                )
 
 
 def render_sidebar() -> tuple[str, float, int]:
@@ -284,6 +347,16 @@ def render_sidebar() -> tuple[str, float, int]:
     if st.sidebar.button("Clear index & start over", use_container_width=True):
         clear_index()
         st.sidebar.success("Index cleared.")
+        st.rerun()
+
+    if st.session_state.chat_messages and st.sidebar.button(
+        "Clear chat history", use_container_width=True
+    ):
+        st.session_state.chat_messages = []
+        st.session_state.last_answer = ""
+        st.session_state.last_query = ""
+        st.session_state.last_context_docs = []
+        st.sidebar.success("Chat cleared.")
         st.rerun()
 
     return model, temperature, retrieval_k
@@ -413,18 +486,6 @@ def main() -> None:
     )
 
     if generate:
-        if st.session_state.vectorstore is None:
-            st.warning("Please upload and index at least one document first.")
-            st.stop()
-
-        if st.session_state.retrieval_chain is None:
-            st.session_state.retrieval_chain = build_retrieval_chain(
-                st.session_state.vectorstore,
-                model=model,
-                temperature=temperature,
-                k=retrieval_k,
-            )
-
         if action == "Custom Inquiry":
             if not custom_query.strip():
                 st.warning("Please enter a custom inquiry before generating.")
@@ -433,29 +494,17 @@ def main() -> None:
         else:
             query = QUICK_ACTIONS[action]
 
-        with st.spinner("Generating test suite from retrieved context..."):
-            try:
-                result = st.session_state.retrieval_chain.invoke({"input": query})
-                answer = result.get("answer", "No response generated.")
-                context_docs = result.get("context", [])
-            except Exception as exc:
-                st.error(friendly_api_error(exc))
-                st.session_state.retrieval_chain = None
-                st.stop()
-
-        st.session_state.last_answer = answer
-        st.session_state.last_query = query
-        st.session_state.last_context_docs = context_docs
-
-        st.markdown("### Generated Test Suite")
-        render_test_suite_output(answer)
-        render_export_buttons(answer)
-        render_source_expander(
-            context_docs,
-            query,
-            st.session_state.vectorstore,
-            retrieval_k,
+        result = run_generation(
+            query, model, temperature, retrieval_k, use_history=False
         )
+        if result:
+            answer, context_docs = result
+            st.markdown("### Generated Test Suite")
+            render_test_suite_output(answer)
+            render_export_buttons(answer)
+            render_source_expander(
+                context_docs, query, st.session_state.vectorstore, retrieval_k
+            )
 
     elif st.session_state.last_answer:
         st.markdown("### Generated Test Suite")
@@ -467,6 +516,32 @@ def main() -> None:
             st.session_state.vectorstore,
             retrieval_k,
         )
+
+    if st.session_state.vectorstore is not None:
+        st.divider()
+        st.subheader("Follow-up chat")
+        st.caption(
+            "Ask refinements like: *Add 5 negative test cases for the payment lockout rule.*"
+        )
+
+        for message in st.session_state.chat_messages:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+
+        follow_up = st.chat_input(
+            "Ask a follow-up question about your test suite...",
+            disabled=st.session_state.vectorstore is None,
+        )
+        if follow_up:
+            result = run_generation(
+                follow_up.strip(),
+                model,
+                temperature,
+                retrieval_k,
+                use_history=True,
+            )
+            if result:
+                st.rerun()
 
 
 if __name__ == "__main__":

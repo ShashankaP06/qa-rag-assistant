@@ -262,3 +262,24 @@ def validate_groq_env() -> dict:
         "max_file_mb": MAX_FILE_SIZE_MB,
         "max_total_mb": MAX_TOTAL_UPLOAD_MB,
     }
+
+
+def build_query_with_history(query: str, chat_messages: list) -> str:
+    """Wrap a follow-up query with recent conversation context."""
+    if not chat_messages:
+        return query
+
+    history_lines = []
+    for msg in chat_messages[-8:]:
+        role = "User" if msg["role"] == "user" else "Assistant"
+        content = msg["content"]
+        if len(content) > 800:
+            content = content[:800] + "..."
+        history_lines.append(f"{role}: {content}")
+
+    return (
+        "Continue this QA test design conversation using the indexed documents.\n\n"
+        "Conversation so far:\n"
+        + "\n".join(history_lines)
+        + f"\n\nLatest request:\n{query}"
+    )
