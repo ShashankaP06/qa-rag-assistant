@@ -48,18 +48,17 @@ load_dotenv(Path(__file__).parent / ".env", override=True)
 
 
 def _sync_streamlit_secrets_to_env() -> None:
-    """Streamlit Community Cloud injects secrets via st.secrets, not .env."""
+    """Local .streamlit/secrets.toml; Cloud also sets root secrets as env vars."""
     if os.getenv("GROQ_API_KEY"):
         return
     try:
-        key = st.secrets.get("GROQ_API_KEY")
-    except (FileNotFoundError, KeyError, AttributeError):
+        if "GROQ_API_KEY" not in st.secrets:
+            return
+        key = st.secrets["GROQ_API_KEY"]
+    except Exception:
         return
     if key:
         os.environ["GROQ_API_KEY"] = str(key).strip().strip('"').strip("'")
-
-
-_sync_streamlit_secrets_to_env()
 
 
 # ---------------------------------------------------------------------------
@@ -450,6 +449,7 @@ def main() -> None:
         layout="wide",
     )
 
+    _sync_streamlit_secrets_to_env()
     init_session_state()
     model, temperature, retrieval_k = render_sidebar()
     invalidate_chain_if_settings_changed(model, temperature, retrieval_k)
@@ -568,5 +568,4 @@ def main() -> None:
                 st.rerun()
 
 
-if __name__ == "__main__":
-    main()
+main()
