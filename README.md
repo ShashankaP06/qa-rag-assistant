@@ -31,14 +31,14 @@ cd qa-rag-assistant
 # Windows
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 ```bash
 # macOS / Linux
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 ### 3. Configure secrets
@@ -144,6 +144,8 @@ qa-rag-assistant/
 2. Go to [share.streamlit.io](https://share.streamlit.io)
 3. New app → select repo → main file: `app.py`
 4. Add `GROQ_API_KEY` in **Advanced settings → Secrets**
+5. Use **Python 3.11** in Advanced settings if offered (recommended for ChromaDB)
+6. `requirements.txt` intentionally omits `streamlit` — Community Cloud provides it
 
 ## Security notes
 

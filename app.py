@@ -1,3 +1,12 @@
+try:
+    __import__("pysqlite3")
+    import sys
+
+    sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+except ImportError:
+    pass
+
+import os
 from pathlib import Path
 
 import streamlit as st
@@ -36,6 +45,21 @@ from core import (
 from exports import EXPORT_FORMATS, export_test_suite
 
 load_dotenv(Path(__file__).parent / ".env", override=True)
+
+
+def _sync_streamlit_secrets_to_env() -> None:
+    """Streamlit Community Cloud injects secrets via st.secrets, not .env."""
+    if os.getenv("GROQ_API_KEY"):
+        return
+    try:
+        key = st.secrets.get("GROQ_API_KEY")
+    except (FileNotFoundError, KeyError, AttributeError):
+        return
+    if key:
+        os.environ["GROQ_API_KEY"] = str(key).strip().strip('"').strip("'")
+
+
+_sync_streamlit_secrets_to_env()
 
 
 # ---------------------------------------------------------------------------
