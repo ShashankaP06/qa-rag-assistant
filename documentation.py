@@ -61,33 +61,53 @@ ARCHITECTURE_HTML = """
 }
 .arch-pipeline {
     display: flex;
-    align-items: stretch;
-    gap: 0.35rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem;
     flex-wrap: nowrap;
+    width: 100%;
 }
 .arch-zone {
-    flex: 1;
-    min-width: 130px;
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     border: 1px solid rgba(123, 91, 242, 0.2);
     border-radius: 8px;
-    padding: 0.65rem;
+    padding: 0.75rem 0.5rem;
     background: rgba(18, 18, 43, 0.6);
+    box-sizing: border-box;
 }
 .arch-zone-title {
     font-size: 0.62rem;
     font-weight: 700;
     color: #a0a0b8;
     letter-spacing: 0.08em;
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.6rem 0;
     text-align: center;
+    width: 100%;
+}
+.arch-zone-body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 100%;
+    flex: 1;
 }
 .arch-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     border-radius: 8px;
-    padding: 0.55rem 0.6rem;
-    margin-bottom: 0.4rem;
+    padding: 0.55rem 0.65rem;
+    margin: 0;
     font-size: 0.78rem;
     line-height: 1.35;
     border: 1px solid transparent;
+    text-align: center;
 }
 .arch-card strong {
     display: block;
@@ -123,19 +143,32 @@ ARCHITECTURE_HTML = """
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: center;
+    flex: 0 0 auto;
     color: #2d5cf7;
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     font-weight: bold;
-    min-width: 1.25rem;
-    padding-top: 1.5rem;
+    width: 1.5rem;
+    min-width: 1.5rem;
+    padding: 0;
+    line-height: 1;
 }
 .arch-support {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.65rem;
     margin-top: 0.5rem;
+    width: 100%;
+    align-items: stretch;
 }
-.arch-support .arch-card { margin-bottom: 0; }
+.arch-support .arch-card {
+    margin: 0;
+    height: 100%;
+    min-height: 4.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 .arch-legend {
     display: flex;
     flex-wrap: wrap;
@@ -165,77 +198,89 @@ ARCHITECTURE_HTML = """
     <div class="arch-pipeline">
       <div class="arch-zone">
         <div class="arch-zone-title">INPUT</div>
-        <div class="arch-card purple">
-          <strong>File Upload</strong>
-          <span>.txt / .pdf · max 10 MB</span>
-        </div>
-        <div class="arch-card purple">
-          <strong>Validation</strong>
-          <span>Size & type checks</span>
+        <div class="arch-zone-body">
+          <div class="arch-card purple">
+            <strong>File Upload</strong>
+            <span>.txt / .pdf · max 10 MB</span>
+          </div>
+          <div class="arch-card purple">
+            <strong>Validation</strong>
+            <span>Size & type checks</span>
+          </div>
         </div>
       </div>
       <div class="arch-arrow">→</div>
       <div class="arch-zone">
         <div class="arch-zone-title">INGESTION</div>
-        <div class="arch-card blue">
-          <strong>Document Loaders</strong>
-          <span>PyPDF · TextLoader</span>
-        </div>
-        <div class="arch-card blue">
-          <strong>Text Splitter</strong>
-          <span>1000 chars · 200 overlap</span>
-        </div>
-        <div class="arch-card blue">
-          <strong>Hash Dedup</strong>
-          <span>Skip re-index if unchanged</span>
+        <div class="arch-zone-body">
+          <div class="arch-card blue">
+            <strong>Document Loaders</strong>
+            <span>PyPDF · TextLoader</span>
+          </div>
+          <div class="arch-card blue">
+            <strong>Text Splitter</strong>
+            <span>1000 chars · 200 overlap</span>
+          </div>
+          <div class="arch-card blue">
+            <strong>Hash Dedup</strong>
+            <span>Skip re-index if unchanged</span>
+          </div>
         </div>
       </div>
       <div class="arch-arrow">→</div>
       <div class="arch-zone">
         <div class="arch-zone-title">EMBEDDING</div>
-        <div class="arch-card green">
-          <strong>MiniLM-L6-v2</strong>
-          <span>Local · no API cost</span>
-        </div>
-        <div class="arch-card green">
-          <strong>ChromaDB</strong>
-          <span>Memory or disk persist</span>
+        <div class="arch-zone-body">
+          <div class="arch-card green">
+            <strong>MiniLM-L6-v2</strong>
+            <span>Local · no API cost</span>
+          </div>
+          <div class="arch-card green">
+            <strong>ChromaDB</strong>
+            <span>Memory or disk persist</span>
+          </div>
         </div>
       </div>
       <div class="arch-arrow">→</div>
       <div class="arch-zone">
         <div class="arch-zone-title">RETRIEVAL</div>
-        <div class="arch-card blue">
-          <strong>Similarity Search</strong>
-          <span>Top-k chunks (configurable)</span>
-        </div>
-        <div class="arch-card blue">
-          <strong>Source Scores</strong>
-          <span>Transparency expander</span>
+        <div class="arch-zone-body">
+          <div class="arch-card blue">
+            <strong>Similarity Search</strong>
+            <span>Top-k chunks (configurable)</span>
+          </div>
+          <div class="arch-card blue">
+            <strong>Source Scores</strong>
+            <span>Transparency expander</span>
+          </div>
         </div>
       </div>
       <div class="arch-arrow">→</div>
       <div class="arch-zone">
         <div class="arch-zone-title">GENERATION</div>
-        <div class="arch-card purple">
-          <strong>LangChain RAG</strong>
-          <span>Retrieval + stuff chain</span>
-        </div>
-        <div class="arch-card purple">
-          <strong>Groq LLM</strong>
-          <span>llama-3.3-70b-versatile</span>
+        <div class="arch-zone-body">
+          <div class="arch-card purple">
+            <strong>LangChain RAG</strong>
+            <span>Retrieval + stuff chain</span>
+          </div>
+          <div class="arch-card purple">
+            <strong>Groq LLM</strong>
+            <span>llama-3.3-70b-versatile</span>
+          </div>
         </div>
       </div>
       <div class="arch-arrow">→</div>
       <div class="arch-zone">
         <div class="arch-zone-title">OUTPUT</div>
-        <div class="arch-card gold">
-          <strong>Test Matrix</strong>
-          <span>8-column Markdown table</span>
-        </div>
-        <div class="arch-card gold">
-          <strong>Exports & Chat</strong>
-          <span>CSV · Jira · TestRail · ADO</span>
+        <div class="arch-zone-body">
+          <div class="arch-card gold">
+            <strong>Test Matrix</strong>
+            <span>8-column Markdown table</span>
+          </div>
+          <div class="arch-card gold">
+            <strong>Exports & Chat</strong>
+            <span>CSV · Jira · TestRail · ADO</span>
+          </div>
         </div>
       </div>
     </div>
