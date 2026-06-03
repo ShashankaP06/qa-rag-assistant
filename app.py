@@ -43,6 +43,7 @@ from core import (
     validate_uploads,
 )
 from exports import EXPORT_FORMATS, export_test_suite
+from interview_guide import render_interview_guide
 from theme import inject_forge_theme
 
 load_dotenv(Path(__file__).parent / ".env", override=True)
@@ -315,6 +316,9 @@ def render_export_buttons(answer: str) -> None:
 
 
 def render_sidebar() -> tuple[str, float, int]:
+    render_interview_guide()
+
+    st.sidebar.divider()
     st.sidebar.header("Settings")
     st.sidebar.caption("All settings are free — no extra API cost.")
 
