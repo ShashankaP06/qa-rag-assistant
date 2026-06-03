@@ -1,42 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-label="QA RAG Assistant application overview">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0e0e1a"/>
-      <stop offset="100%" stop-color="#12122b"/>
-    </linearGradient>
-    <linearGradient id="purple" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#8b6cf5"/>
-      <stop offset="100%" stop-color="#6a4bd9"/>
-    </linearGradient>
-  </defs>
-  <rect width="960" height="520" fill="url(#bg)" rx="12"/>
-  <rect x="16" y="16" width="928" height="488" fill="none" stroke="#7b5bf2" stroke-opacity="0.35" rx="10"/>
-  <!-- Sidebar -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+  <rect width="960" height="520" fill="#0e0e1a"/>
+  <rect x="16" y="16" width="928" height="488" fill="none" stroke="#7b5bf2" stroke-width="1" opacity="0.35" rx="10"/>
   <rect x="28" y="56" width="200" height="436" fill="#1c1c3c" rx="8"/>
-  <text x="48" y="88" fill="#fff" font-family="Segoe UI, sans-serif" font-size="14" font-weight="700">Settings</text>
+  <text x="48" y="88" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">Settings</text>
   <rect x="48" y="104" width="160" height="22" fill="#2a2a50" rx="4"/>
   <rect x="48" y="136" width="160" height="10" fill="#3a3a60" rx="3"/>
   <rect x="48" y="154" width="120" height="10" fill="#3a3a60" rx="3"/>
-  <text x="48" y="200" fill="#a0a0b8" font-family="Segoe UI, sans-serif" font-size="11">Indexed Documents</text>
-  <rect x="48" y="212" width="160" height="36" fill="#28a745" fill-opacity="0.15" stroke="#28a745" stroke-opacity="0.4" rx="6"/>
-  <text x="58" y="234" fill="#e8e8f0" font-family="Segoe UI, sans-serif" font-size="10">sample_prd.txt · 12 chunks</text>
-  <!-- Main -->
-  <text x="248" y="88" fill="#fff" font-family="Segoe UI, sans-serif" font-size="22" font-weight="700">QA RAG Assistant</text>
-  <rect x="248" y="100" width="110" height="28" fill="#7b5bf2" fill-opacity="0.25" rx="6"/>
-  <text x="262" y="119" fill="#fff" font-family="Segoe UI, sans-serif" font-size="12">Application</text>
-  <rect x="366" y="100" width="120" height="28" fill="#2d5cf7" fill-opacity="0.2" rx="6"/>
-  <text x="380" y="119" fill="#a0a0b8" font-family="Segoe UI, sans-serif" font-size="12">Documentation</text>
-  <rect x="248" y="148" width="680" height="72" fill="#1c1c3c" stroke="#7b5bf2" stroke-opacity="0.3" stroke-dasharray="6 4" rx="8"/>
-  <text x="268" y="178" fill="#a0a0b8" font-family="Segoe UI, sans-serif" font-size="13">Upload specification documents (.txt, .pdf)</text>
-  <text x="268" y="200" fill="#7b5bf2" font-family="Segoe UI, sans-serif" font-size="12">sample_prd.txt uploaded</text>
-  <rect x="248" y="236" width="180" height="36" fill="url(#purple)" rx="8"/>
-  <text x="278" y="259" fill="#fff" font-family="Segoe UI, sans-serif" font-size="13" font-weight="600">Generate Test Suite</text>
-  <rect x="248" y="292" width="680" height="188" fill="#1a1a38" stroke="#2d5cf7" stroke-opacity="0.35" rx="8"/>
-  <text x="268" y="322" fill="#ffc107" font-family="Segoe UI, sans-serif" font-size="13" font-weight="700">Generated Test Suite</text>
-  <line x1="268" y1="338" x2="908" y2="338" stroke="#7b5bf2" stroke-opacity="0.2"/>
-  <text x="280" y="362" fill="#9eb8ff" font-family="Segoe UI, sans-serif" font-size="11">TC-001 · Login · Positive · Source: REQ-3.1</text>
-  <text x="280" y="384" fill="#9eb8ff" font-family="Segoe UI, sans-serif" font-size="11">TC-002 · Payment · Negative · Source: REQ-5.2</text>
-  <rect x="268" y="408" width="200" height="24" fill="#28a745" fill-opacity="0.2" rx="4"/>
-  <text x="278" y="424" fill="#7b5bf2" font-family="Segoe UI, sans-serif" font-size="10">Retrieved Source Chunks (RAG)</text>
-  <text x="760" y="470" fill="#a0a0b8" font-family="Segoe UI, sans-serif" font-size="10">Local embeddings · Groq LLM · Evidence-based QA</text>
+  <text x="48" y="200" fill="#a0a0b8" font-family="Arial, sans-serif" font-size="11">Indexed Documents</text>
+  <rect x="48" y="212" width="160" height="36" fill="#1e3d2a" stroke="#28a745" stroke-width="1" rx="6"/>
+  <text x="58" y="234" fill="#e8e8f0" font-family="Arial, sans-serif" font-size="10">sample_prd.txt - 12 chunks</text>
+  <text x="248" y="88" fill="#ffffff" font-family="Arial, sans-serif" font-size="22" font-weight="bold">QA RAG Assistant</text>
+  <rect x="248" y="100" width="110" height="28" fill="#3d2d6b" rx="6"/>
+  <text x="262" y="119" fill="#ffffff" font-family="Arial, sans-serif" font-size="12">Application</text>
+  <rect x="366" y="100" width="120" height="28" fill="#1e2d5c" rx="6"/>
+  <text x="380" y="119" fill="#a0a0b8" font-family="Arial, sans-serif" font-size="12">Documentation</text>
+  <rect x="248" y="148" width="680" height="72" fill="#1c1c3c" stroke="#7b5bf2" stroke-width="1" rx="8"/>
+  <text x="268" y="178" fill="#a0a0b8" font-family="Arial, sans-serif" font-size="13">Upload specification documents (.txt, .pdf)</text>
+  <text x="268" y="200" fill="#9d85f7" font-family="Arial, sans-serif" font-size="12">sample_prd.txt uploaded</text>
+  <rect x="248" y="236" width="180" height="36" fill="#7b5bf2" rx="8"/>
+  <text x="268" y="259" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="bold">Generate Test Suite</text>
+  <rect x="248" y="292" width="680" height="188" fill="#1a1a38" stroke="#2d5cf7" stroke-width="1" rx="8"/>
+  <text x="268" y="322" fill="#ffc107" font-family="Arial, sans-serif" font-size="13" font-weight="bold">Generated Test Suite</text>
+  <line x1="268" y1="338" x2="908" y2="338" stroke="#7b5bf2" stroke-width="1" opacity="0.3"/>
+  <text x="280" y="362" fill="#9eb8ff" font-family="Arial, sans-serif" font-size="11">TC-001 - Login - Positive - Source REQ-3.1</text>
+  <text x="280" y="384" fill="#9eb8ff" font-family="Arial, sans-serif" font-size="11">TC-002 - Payment - Negative - Source REQ-5.2</text>
+  <rect x="268" y="408" width="220" height="24" fill="#1e3d2a" rx="4"/>
+  <text x="278" y="424" fill="#7b5bf2" font-family="Arial, sans-serif" font-size="10">Retrieved Source Chunks (RAG)</text>
+  <text x="560" y="470" fill="#a0a0b8" font-family="Arial, sans-serif" font-size="10">Local embeddings - Groq LLM - Evidence-based QA</text>
 </svg>
