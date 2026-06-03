@@ -335,74 +335,350 @@ ARCHITECTURE_HTML = """
 </div>
 """
 
+DOC_PANELS_HTML = """
+<style>
+.doc-section {
+    margin: 1.75rem 0 1rem 0;
+}
+.doc-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(123, 91, 242, 0.3);
+}
+.doc-section-header h4 {
+    margin: 0;
+    color: #fff;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.doc-section-tag {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: rgba(45, 92, 247, 0.25);
+    color: #9eb8ff;
+    font-weight: 600;
+}
+.workflow-panel {
+    padding: 1.25rem 1rem 1.5rem;
+    border: 1px solid rgba(123, 91, 242, 0.25);
+    border-radius: 12px;
+    background: rgba(18, 18, 43, 0.55);
+    overflow-x: auto;
+}
+.workflow-track {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-width: 880px;
+    gap: 0;
+    padding: 0.25rem 0;
+}
+.workflow-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    min-width: 100px;
+    padding: 0 0.35rem;
+}
+.workflow-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 1.15rem;
+    left: calc(50% + 1.1rem);
+    width: calc(100% - 2.2rem);
+    height: 2px;
+    background: linear-gradient(90deg, #2d5cf7, rgba(123, 91, 242, 0.5));
+    z-index: 0;
+}
+.workflow-icon {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #7b5bf2, #2d5cf7);
+    border: 2px solid rgba(157, 133, 247, 0.5);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.5rem;
+}
+.workflow-step:nth-child(5) .workflow-icon,
+.workflow-step:nth-child(6) .workflow-icon {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    border-color: rgba(40, 167, 69, 0.5);
+}
+.workflow-step:nth-child(7) .workflow-icon {
+    background: linear-gradient(135deg, #ffc107, #d39e00);
+    border-color: rgba(255, 193, 7, 0.5);
+    color: #1a1a2e;
+}
+.workflow-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.2rem;
+}
+.workflow-desc {
+    font-size: 0.68rem;
+    color: #a0a0b8;
+    line-height: 1.35;
+    max-width: 108px;
+}
+.doc-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    width: 100%;
+}
+@media (max-width: 900px) {
+    .doc-grid-3 { grid-template-columns: 1fr; }
+}
+.doc-panel {
+    border: 1px solid rgba(45, 92, 247, 0.25);
+    border-radius: 12px;
+    padding: 1rem 1.1rem 1.15rem;
+    background: rgba(18, 18, 43, 0.55);
+    height: 100%;
+    box-sizing: border-box;
+}
+.doc-panel h5 {
+    margin: 0 0 0.85rem 0;
+    color: #ffc107;
+    font-size: 0.72rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+.tech-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+.tech-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.45rem 0.55rem;
+    border-radius: 6px;
+    background: rgba(45, 92, 247, 0.12);
+    border: 1px solid rgba(45, 92, 247, 0.2);
+}
+.tech-row span:first-child {
+    font-size: 0.68rem;
+    color: #a0a0b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.tech-row span:last-child {
+    font-size: 0.76rem;
+    color: #fff;
+    font-weight: 600;
+    text-align: right;
+}
+.principle-card {
+    padding: 0.55rem 0.6rem;
+    margin-bottom: 0.45rem;
+    border-radius: 8px;
+    border-left: 3px solid #7b5bf2;
+    background: rgba(123, 91, 242, 0.1);
+}
+.principle-card:last-child { margin-bottom: 0; }
+.principle-card strong {
+    display: block;
+    font-size: 0.76rem;
+    color: #fff;
+    margin-bottom: 0.15rem;
+}
+.principle-card p {
+    margin: 0;
+    font-size: 0.68rem;
+    color: #a0a0b8;
+    line-height: 1.4;
+}
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+.kpi-box {
+    text-align: center;
+    padding: 0.55rem 0.35rem;
+    border-radius: 8px;
+    background: rgba(40, 167, 69, 0.15);
+    border: 1px solid rgba(40, 167, 69, 0.35);
+}
+.kpi-box .kpi-val {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #28a745;
+    line-height: 1.2;
+}
+.kpi-box .kpi-lbl {
+    font-size: 0.62rem;
+    color: #a0a0b8;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.metric-pill {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.45rem;
+    margin: 0.15rem 0.2rem 0.15rem 0;
+    border-radius: 4px;
+    background: rgba(255, 193, 7, 0.15);
+    border: 1px solid rgba(255, 193, 7, 0.35);
+    color: #ffe082;
+}
+.doc-footer {
+    margin-top: 1.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(123, 91, 242, 0.2);
+    font-size: 0.8rem;
+    color: #a0a0b8;
+}
+.doc-footer a { color: #7b5bf2; font-weight: 600; text-decoration: none; }
+.doc-purpose {
+    font-size: 0.85rem;
+    color: #c8c8dc;
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+}
+</style>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h4>Product workflow</h4>
+    <span class="doc-section-tag">7 STAGES</span>
+  </div>
+  <p class="doc-purpose">
+    End-to-end journey from requirements upload to exportable test artifacts —
+    each stage is traceable to source documents.
+  </p>
+  <div class="workflow-panel">
+    <div class="workflow-track">
+      <div class="workflow-step">
+        <div class="workflow-icon">1</div>
+        <div class="workflow-label">Upload</div>
+        <div class="workflow-desc">PRD / spec validated & ingested</div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">2</div>
+        <div class="workflow-label">Index</div>
+        <div class="workflow-desc">Chunks embedded in Chroma</div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">3</div>
+        <div class="workflow-label">Query</div>
+        <div class="workflow-desc">Quick action or custom prompt</div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">4</div>
+        <div class="workflow-label">Generate</div>
+        <div class="workflow-desc">Top-k context + Groq LLM</div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">5</div>
+        <div class="workflow-label">Review</div>
+        <div class="workflow-desc">Source chunks & similarity scores</div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">6</div>
+        <div class="workflow-label">Refine</div>
+        <div class="workflow-desc">Follow-up chat iterations</div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">7</div>
+        <div class="workflow-label">Export</div>
+        <div class="workflow-desc">MD · CSV · Jira · TestRail · ADO</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h4>Platform capabilities</h4>
+    <span class="doc-section-tag">ENGINEERING</span>
+  </div>
+  <div class="doc-grid-3">
+    <div class="doc-panel">
+      <h5>Technology stack</h5>
+      <div class="tech-stack">
+        <div class="tech-row"><span>Frontend</span><span>Streamlit</span></div>
+        <div class="tech-row"><span>Orchestration</span><span>LangChain 0.2</span></div>
+        <div class="tech-row"><span>Embeddings</span><span>MiniLM-L6-v2</span></div>
+        <div class="tech-row"><span>Vector DB</span><span>ChromaDB 0.5</span></div>
+        <div class="tech-row"><span>LLM</span><span>Groq (free tier)</span></div>
+        <div class="tech-row"><span>CI / Tests</span><span>pytest · GitHub Actions</span></div>
+        <div class="tech-row"><span>Deploy</span><span>Docker · Streamlit Cloud</span></div>
+      </div>
+    </div>
+    <div class="doc-panel">
+      <h5>Design principles</h5>
+      <div class="principle-card">
+        <strong>Local embeddings</strong>
+        <p>Zero embedding API cost; requirements stay on-device during indexing.</p>
+      </div>
+      <div class="principle-card">
+        <strong>Lazy LLM initialization</strong>
+        <p>Index without API key; generation fails gracefully when key is missing.</p>
+      </div>
+      <div class="principle-card">
+        <strong>Source transparency</strong>
+        <p>Every test case maps to retrieved requirement text with scores.</p>
+      </div>
+      <div class="principle-card">
+        <strong>Testable core</strong>
+        <p>Business logic in core.py, decoupled from Streamlit UI.</p>
+      </div>
+    </div>
+    <div class="doc-panel">
+      <h5>Quality & operations</h5>
+      <div class="kpi-row">
+        <div class="kpi-box"><div class="kpi-val">45</div><div class="kpi-lbl">Unit tests</div></div>
+        <div class="kpi-box"><div class="kpi-val">100%</div><div class="kpi-lbl">RAG eval pass</div></div>
+        <div class="kpi-box"><div class="kpi-val">CI</div><div class="kpi-lbl">On push</div></div>
+      </div>
+      <div style="font-size:0.68rem;color:#a0a0b8;line-height:1.5;">
+        RAG benchmark metrics:
+        <span class="metric-pill">Hit@k</span>
+        <span class="metric-pill">Keyword recall</span>
+        <span class="metric-pill">MRR</span>
+        <span class="metric-pill">Negative retrieval</span>
+        <span class="metric-pill">Faithfulness</span>
+      </div>
+      <p style="margin:0.65rem 0 0;font-size:0.68rem;color:#a0a0b8;">
+        Run: <code style="color:#9eb8ff;">python -m eval.run_eval</code>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="doc-footer">
+  Source repository —
+  <a href="GITHUB_REPO_PLACEHOLDER" target="_blank" rel="noopener">github.com/ShashankaP06/qa-rag-assistant</a>
+</div>
+""".replace("GITHUB_REPO_PLACEHOLDER", GITHUB_REPO)
+
 
 def render_documentation() -> None:
     st.subheader("Documentation")
     st.caption(
-        "Visual overview of the QA RAG Assistant — architecture, components, and quality pipeline."
+        "System architecture, product workflow, and engineering capabilities."
     )
 
     st.markdown(ARCHITECTURE_HTML, unsafe_allow_html=True)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        with st.expander("Overview", expanded=True):
-            st.markdown(
-                """
-**Purpose:** Turn requirements documents into **traceable, evidence-based** test suites.
-
-| Stage | What happens |
-|-------|----------------|
-| Upload | PRD / spec files ingested and validated |
-| Index | Chunks embedded locally and stored in Chroma |
-| Query | User picks a quick action or custom question |
-| Generate | Top-k chunks + Groq LLM produce a test matrix |
-| Review | Source chunks show similarity scores per requirement |
-| Refine | Follow-up chat iterates on the suite |
-| Export | Markdown, CSV, Jira, TestRail, or Azure DevOps formats |
-                """
-            )
-
-        with st.expander("Technology stack"):
-            st.markdown(
-                """
-| Component | Technology |
-|-----------|------------|
-| Frontend | Streamlit |
-| Orchestration | LangChain 0.2 |
-| Embeddings | HuggingFace `all-MiniLM-L6-v2` |
-| Vector store | ChromaDB 0.5 |
-| LLM | Groq (free tier) |
-| Testing | pytest + GitHub Actions |
-| Deployment | Docker · Streamlit Community Cloud |
-                """
-            )
-
-    with col2:
-        with st.expander("Design principles"):
-            st.markdown(
-                """
-- **Local embeddings** — zero embedding API cost; requirements stay on-device during indexing.
-- **Lazy LLM init** — indexing works without `GROQ_API_KEY`; generation fails gracefully if missing.
-- **Source transparency** — every test case links back to retrieved requirement text.
-- **Separated logic** — `core.py` is unit-tested independently of the UI.
-- **Free-tier constraint** — deliberate scope for portfolio and pilot deployments.
-                """
-            )
-
-        with st.expander("Quality assurance"):
-            st.markdown(
-                """
-**Automated tests:** 45 pytest cases (core, ingestion, RAG chain, exports).
-
-**RAG evaluation** (`python -m eval.run_eval`):
-- Hit@k · Keyword recall · MRR
-- Negative retrieval checks
-- Optional faithfulness eval with `--with-llm`
-
-**CI:** Runs on every push to `main` — fast tests, retrieval eval, full suite.
-                """
-            )
-
-    st.markdown(f"**Repository:** [{GITHUB_REPO}]({GITHUB_REPO})")
+    st.markdown(DOC_PANELS_HTML, unsafe_allow_html=True)
