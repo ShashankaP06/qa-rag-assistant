@@ -42,6 +42,7 @@ from core import (
     validate_groq_env,
     validate_uploads,
 )
+from documentation import render_documentation
 from exports import EXPORT_FORMATS, export_test_suite
 from theme import inject_forge_theme
 
@@ -443,20 +444,7 @@ def render_source_expander(
                     st.divider()
 
 
-def main() -> None:
-    st.set_page_config(
-        page_title="QA RAG Assistant",
-        page_icon="🧪",
-        layout="wide",
-    )
-    inject_forge_theme()
-
-    _sync_streamlit_secrets_to_env()
-    init_session_state()
-    model, temperature, retrieval_k = render_sidebar()
-    invalidate_chain_if_settings_changed(model, temperature, retrieval_k)
-    try_load_persisted_index()
-
+def render_application(model: str, temperature: float, retrieval_k: int) -> None:
     st.title("QA RAG Assistant")
     st.markdown(
         "Upload requirements or specification documents (`.txt`, `.pdf`) to generate "
@@ -568,6 +556,29 @@ def main() -> None:
             )
             if result:
                 st.rerun()
+
+
+def main() -> None:
+    st.set_page_config(
+        page_title="QA RAG Assistant",
+        page_icon="🧪",
+        layout="wide",
+    )
+    inject_forge_theme()
+
+    _sync_streamlit_secrets_to_env()
+    init_session_state()
+    model, temperature, retrieval_k = render_sidebar()
+    invalidate_chain_if_settings_changed(model, temperature, retrieval_k)
+    try_load_persisted_index()
+
+    tab_app, tab_doc = st.tabs(["Application", "Documentation"])
+
+    with tab_app:
+        render_application(model, temperature, retrieval_k)
+
+    with tab_doc:
+        render_documentation()
 
 
 main()
